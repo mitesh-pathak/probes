@@ -2,6 +2,14 @@
 My Tinker Lab, My Experiments, My Probes on AI
 
 ---
+# Project Structure
+Follow these directories for
+* [Source Files & Conventions](./src/)
+* [Tests (Pytest)](./tests/)
+* [Experiments](./src/experiments/)
+* [Utilities](./src/utils/)
+
+---
 # Base Setup
 ## Setup virtual environment
 ```sh
@@ -15,22 +23,11 @@ curl -sS https://bootstrap.pypa.io/get-pip.py | python
 pip install -r requirements.txt
 ```
 
----
-# Project Structure
-To Be Added
-
-## Add ./src as path
+## Add ./src as path for Development Setup
 To import modules from under /src directory
 ```sh
 touch .env
 echo 'PYTHONPATH=./src' >> .env
-```
-
----
-# Run Environment
-## Ensure .venv is activated
-```sh
-source .venv/bin/activate
 ```
 
 ## Ensure VS Code Can Run Using .venv Python Kernel
@@ -38,41 +35,8 @@ source .venv/bin/activate
 python -m ipykernel install --user --name=probes --display-name "Python (.venv: probes)"
 ```
 
-## Run Tests
+## Note On Run Any Files
+Include PYTHONPATH=./src to ensure the models are loaded and avoid `ModuleNotFoundError`.
 ```sh
-PYTHONPATH=./src pytest
-```
-
----
-# Python Files Convention
-We will use `# %%` create cells similar to jupyter notebook in python file.
-To execute a cell use `Shift + Enter`.
-
-## Code Cell
-```python
-# %%
-# # Load Libraries
-
-import numpy as np
-import pandas as pd
-
-# %%
-# # Load Data
-
-df = pd.read_csv("data/data.csv")
-df.head()
-```
-
-## Text / Markdown / Comments Cell
-```python
-# %%
-# # Feature Engineering
-#
-# We normalize the features because
-# KMeans is distance based.
-#
-# Formula:
-#
-#     z = (x - mean) / std
-#
+export PYTHONPATH=./src
 ```
