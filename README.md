@@ -26,6 +26,22 @@ touch .env
 echo 'PYTHONPATH=./src' >> .env
 ```
 
+---
+# Run Environment
+## Ensure .venv is activated
+```sh
+source .venv/bin/activate
+```
+
+## Ensure VS Code Can Run Using .venv Python Kernel
+```sh
+python -m ipykernel install --user --name=probes --display-name "Python (.venv: probes)"
+```
+
+## Run Tests
+```sh
+PYTHONPATH=./src pytest
+```
 
 ---
 # Python Files Convention
