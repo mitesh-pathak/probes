@@ -54,3 +54,13 @@ V
     * **On Failure / Dead End:** Mark edge as invalidated, log negative results, and backtrack to parent node.
 
 10. **Traverse Search Space:** Repeat experimental phase (step 6 to 9) until the the hypothesis branch is fully exhausted or goal is reached.
+
+
+# Create New Research
+```sh
+PYTHONPATH=./src python -m research init \
+  --title "SmolLM JSON Extraction Reliability" \
+  --goal "json_valid_rate >= 0.90" \
+  --baseline-label "Zero-Shot Prompt" \
+  --metrics json_valid_rate=0.40 latency_ms=180
+```

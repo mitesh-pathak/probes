@@ -41,3 +41,7 @@ source .venv/bin/activate
 ```sh
 PYTHONPATH=./src pytest
 ```
+
+---
+# Next Step
+Learn how to [create research](./RESEARCH.md) and [run experiements](./EXPERIMENTS.md).
