@@ -1,0 +1,14 @@
+# ==========================================
+# EXAMPLE COMMON SERVICE CONFIG
+# ==========================================
+service:
+  postgres:
+    host: locahost:5432
+    user: postgres
+
+---
+# ==========================================
+# EXAMPLE COMMON EXPERIMENT CONFIG (this may get override by experiment.yml)
+# ==========================================
+model:
+  name: "meta-llama/Meta-Llama-3-8B"

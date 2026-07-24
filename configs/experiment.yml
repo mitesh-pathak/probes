@@ -1,0 +1,28 @@
+# ==========================================
+# EXAMPLE EXPERIMENT METADATA
+# ==========================================
+metadata:
+  research_id: rs001
+  experiment_id: exp001
+  parent_state: s002
+  title: "Test INT4 KV Cache with Per-Channel Quantization"
+  hypothesis: "Switching from per-tensor to per-channel INT4 quantization recovers lost long-context F1 accuracy while retaining low latency."
+  variable_delta:
+    kv_cache_dtype: int4
+    quant_granularity: per_channel
+
+# ==========================================
+# EXAMPLE HYPERPARAMETERS & CONFIGS
+# ==========================================
+model:
+  name: "meta-llama/Meta-Llama-3-8B"
+  kv_cache_dtype: "int4"
+  quant_granularity: "per_channel"
+
+dataset:
+  path: "data/eval_long_context.jsonl"
+  max_seq_len: 16384
+
+generation:
+  temperature: 0.0
+  max_new_tokens: 512
