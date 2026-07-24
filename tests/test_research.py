@@ -295,3 +295,131 @@ def test_record_failed_experiment_prunes_node_and_keeps_current_state(test_env):
     assert data["current_state"] == "s001"
     assert data["nodes"]["s002"]["status"] == "PRUNED"
     assert data["edges"][0]["status"] == "FAILED"
+
+def test_status_displays_summary_including_current_state_and_pruned_branches(test_env):
+    tmp_path, env = test_env
+
+    # 1. Arrange: Setup rs001 with s001 (baseline), s002 (ACTIVE), and s003 (PRUNED)
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "init",
+            "--title",
+            "Latency Reduction",
+            "--goal",
+            "Latency < 400ms",
+            "--metrics",
+            "latency_ms=650",
+            "f1_score=82.5",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # Stage and succeed s002
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "INT8 KV Cache",
+            "--delta",
+            "Apply INT8",
+        ],
+        check=True,
+        env=env,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "record",
+            "--rs",
+            "rs001",
+            "--state",
+            "s002",
+            "--status",
+            "success",
+            "--lesson",
+            "INT8 works well",
+            "--metrics",
+            "latency_ms=480",
+            "f1_score=81.8",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # Stage and fail s003
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "INT4 KV Cache",
+            "--delta",
+            "Apply INT4",
+        ],
+        check=True,
+        env=env,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "record",
+            "--rs",
+            "rs001",
+            "--state",
+            "s003",
+            "--status",
+            "failed",
+            "--lesson",
+            "INT4 lost too much accuracy",
+            "--metrics",
+            "latency_ms=310",
+            "f1_score=71.2",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # 2. Act: Call research status
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "status",
+            "--rs",
+            "rs001",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+
+    # 3. Assert CLI Succeeded
+    assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
+
+    stdout = result.stdout
+    # Check key information is printed in stdout
+    assert "rs001" in stdout
+    assert "Latency Reduction" in stdout
+    assert "Latency < 400ms" in stdout
+    assert "Current State: s002" in stdout
+    assert "INT8 works well" in stdout
+    assert "PRUNED" in stdout
+    assert "INT4 lost too much accuracy" in stdout

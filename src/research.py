@@ -166,6 +166,56 @@ def cmd_record(args):
     print(f"  Artifact saved to {artifact_path}")
 
 
+def cmd_status(args):
+    """Prints a summary of a research question's current state and history."""
+    target_file = RESEARCH_DIR / f"{args.rs}.yml"
+    if not target_file.exists():
+        raise FileNotFoundError(f"Research question file '{target_file}' not found.")
+
+    with open(target_file, "r") as f:
+        rs_data = yaml.safe_load(f)
+
+    rs_id = rs_data.get("id", args.rs)
+    title = rs_data.get("title", "")
+    goal = rs_data.get("goal", "")
+    curr_state = rs_data.get("current_state", "")
+
+    nodes = rs_data.get("nodes", {})
+    edges = rs_data.get("edges", [])
+
+    print(f"=== Research Question: {rs_id} ===")
+    print(f"Title: {title}")
+    print(f"Goal: {goal}")
+    print(f"Current State: {curr_state}")
+    print("---")
+
+    print("Nodes:")
+    for nid, ninfo in nodes.items():
+        status = ninfo.get("status", "UNKNOWN")
+        label = ninfo.get("label") or ninfo.get("hypothesis") or ""
+        metrics = ninfo.get("metrics", {})
+        lesson = ninfo.get("lesson", "")
+
+        is_current = " (CURRENT)" if nid == curr_state else ""
+        print(f"  * {nid} [{status}]{is_current}: {label}")
+        if metrics:
+            print(f"    Metrics: {metrics}")
+        if lesson:
+            print(f"    Lesson: {lesson}")
+
+    print("---")
+    print("Edges / Transitions:")
+    for edge in edges:
+        src = edge.get("from")
+        dst = edge.get("to")
+        estatus = edge.get("status", "PLANNED")
+        delta = edge.get("delta", "")
+        lesson = edge.get("lesson", "")
+        print(f"  * {src} -> {dst} [{estatus}]: Delta='{delta}'")
+        if lesson:
+            print(f"    Lesson: {lesson}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Research Execution CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -220,6 +270,13 @@ def main():
         help="Final run metrics e.g. latency_ms=480 f1_score=81.8",
     )
     p_record.set_defaults(func=cmd_record)
+
+    # Command: status
+    p_status = subparsers.add_parser("status", help="Show research state summary")
+    p_status.add_argument(
+        "--rs", required=True, help="Research question ID (e.g. rs001)"
+    )
+    p_status.set_defaults(func=cmd_status)
 
     args = parser.parse_args()
     args.func(args)
