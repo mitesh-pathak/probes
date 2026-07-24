@@ -100,3 +100,66 @@ def test_init_auto_increments_rs_id(test_env):
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
     target_file = tmp_path / "context" / "research_questions" / "rs002.yml"
     assert target_file.exists()
+
+
+def test_new_exp_stages_candidate_node_and_edge(test_env):
+    tmp_path, env = test_env
+
+    # 1. Arrange: Initialize rs001
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "init",
+            "--title",
+            "Latency Research",
+            "--goal",
+            "Latency < 400ms",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # 2. Act: Stage a new experiment (new-exp)
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "Quantization to INT8 will reduce latency by 40% without losing accuracy",
+            "--delta",
+            "Apply INT8 post-training quantization",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+
+    # 3. Assert CLI success
+    assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
+
+    # 4. Assert updated YAML content
+    target_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    with open(target_file) as f:
+        data = yaml.safe_load(f)
+
+    # State checks
+    assert data["current_state"] == "s001"  # Still on baseline until recorded
+    assert "s002" in data["nodes"]
+
+    new_node = data["nodes"]["s002"]
+    assert new_node["status"] == "PLANNED"
+    assert new_node["hypothesis"] == "Quantization to INT8 will reduce latency by 40% without losing accuracy"
+    assert new_node["delta"] == "Apply INT8 post-training quantization"
+
+    # Edge checks
+    assert len(data["edges"]) == 1
+    edge = data["edges"][0]
+    assert edge["from"] == "s001"
+    assert edge["to"] == "s002"
+    assert edge["delta"] == "Apply INT8 post-training quantization"

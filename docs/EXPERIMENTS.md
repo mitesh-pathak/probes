@@ -8,6 +8,12 @@ If [RESEARCH.md](./RESEARCH.md) defines **why** and **what** we explore, this gu
 
 ## 1. Creating an Experiment
 Before writing code or running a script, every experiment requires a clear hypothesis and a single configuration delta defined in its config file.
+```sh
+python -m research new-exp \
+  --rs "rs001" \
+  --hypothesis "Zero-shot extraction with SmolLM will achieve >70% valid JSON formatting on simple text samples." \
+  --delta "Zero-shot prompt template without in-context examples"
+```
 
 ### Step-by-Step Creation
 1. **Identify Parent State:** Check `current_state` in `context/research_questions/rs001.yml` (e.g., `s002`).
