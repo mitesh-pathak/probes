@@ -163,3 +163,135 @@ def test_new_exp_stages_candidate_node_and_edge(test_env):
     assert edge["from"] == "s001"
     assert edge["to"] == "s002"
     assert edge["delta"] == "Apply INT8 post-training quantization"
+
+def test_record_successful_experiment_updates_dag_and_creates_artifact(test_env):
+    tmp_path, env = test_env
+
+    # 1. Arrange: Init rs001 and stage s002
+    subprocess.run(
+        [sys.executable, "-m", "research", "init", "--title", "Latency", "--goal", "Goal"],
+        check=True,
+        env=env,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "INT8 KV Cache reduces latency",
+            "--delta",
+            "Apply INT8",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # 2. Act: Record successful run for s002
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "record",
+            "--rs",
+            "rs001",
+            "--state",
+            "s002",
+            "--status",
+            "success",
+            "--lesson",
+            "Group size 64 preserves attention precision",
+            "--metrics",
+            "latency_ms=480",
+            "f1_score=81.8",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+
+    assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
+
+    # 3. Assert YAML update
+    rs_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    with open(rs_file) as f:
+        data = yaml.safe_load(f)
+
+    assert data["current_state"] == "s002"
+    assert data["nodes"]["s002"]["status"] == "ACTIVE"
+    assert data["nodes"]["s002"]["metrics"] == {"latency_ms": 480, "f1_score": 81.8}
+
+    assert len(data["edges"]) == 1
+    edge = data["edges"][0]
+    assert edge["status"] == "SUCCESS"
+    assert edge["lesson"] == "Group size 64 preserves attention precision"
+
+    # 4. Assert artifact creation
+    artifact_path = tmp_path / "context" / "experiment_runs" / "rs001_exp001_run001_artifact.json"
+    assert artifact_path.exists()
+
+
+def test_record_failed_experiment_prunes_node_and_keeps_current_state(test_env):
+    tmp_path, env = test_env
+
+    # 1. Arrange: Init and stage
+    subprocess.run(
+        [sys.executable, "-m", "research", "init", "--title", "Latency", "--goal", "Goal"],
+        check=True,
+        env=env,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "INT4 KV Cache",
+            "--delta",
+            "Apply INT4",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # 2. Act: Record failed run for s002
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "record",
+            "--rs",
+            "rs001",
+            "--state",
+            "s002",
+            "--status",
+            "failed",
+            "--lesson",
+            "Severe accuracy drop below 80%",
+            "--metrics",
+            "latency_ms=310",
+            "f1_score=71.2",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+
+    assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
+
+    # 3. Assert current_state remains anchored at s001
+    rs_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    with open(rs_file) as f:
+        data = yaml.safe_load(f)
+
+    assert data["current_state"] == "s001"
+    assert data["nodes"]["s002"]["status"] == "PRUNED"
+    assert data["edges"][0]["status"] == "FAILED"

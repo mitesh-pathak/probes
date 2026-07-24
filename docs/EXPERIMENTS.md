@@ -63,6 +63,14 @@ python evals/evaluate.py --output outputs/rs001_exp001_run001.json
 
 ## 4. Recording Experiments & Generating Artifacts
 Every run must generate an immutable **Run Artifact** and update the local context file.
+```sh
+PYTHONPATH=./src python -m research record \
+  --rs rs001 \
+  --state s002 \
+  --status success \
+  --lesson "Zero-shot extraction achieved valid JSON, but required strict 'ONLY valid JSON' instruction in prompt." \
+  --metrics valid_rate=0.80 latency_ms=145.2
+```
 
 ### Artifact Schema
 Ensure your run logger outputs structured metadata to stdout and your tracking tool (e.g., Weights & Biases):
@@ -140,6 +148,7 @@ edges:
     hypothesis: "Quantizing KV cache to INT4 further reduces latency without accuracy drop."
     lesson: "Severe accuracy drop (F1 71.2% < 80%). Precision loss causes hallucinations in long context."
 ```
+**NOTE**: Valid status are [PLANNED / ACTIVE / PRUNED] for nodes and [SUCCESS / FAILED] for edges
 
 
 ## Loading Graph
