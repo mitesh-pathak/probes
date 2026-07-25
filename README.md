@@ -26,7 +26,7 @@ Read more about the research hierarchy and DAG in [docs/RESEARCH.md](./docs/RESE
 | [`configs/`](./configs/) | Configuration files for baselines and experiment runs. |
 | [`artifacts/`](./artifacts/) | Accumulated knowledge graph (research dags and experiment artifacts). |
 | [`dataset/`](./dataset/) | Datasets and benchmarks accumulated across research runs. |
-| [`docs/`](./docs/) | Process guides and manuals ([`RESEARCH.md`](./docs/RESEARCH.md), [`EXPERIMENTS.md`](./docs/EXPERIMENTS.md), [`CODING.md`](./docs/CODING.md), [`SETUP.md`](./docs/SETUP.md)). |
+| [`docs/`](./docs/) | Process guides and manuals ([`RESEARCH.md`](./docs/RESEARCH.md), [`EXPERIMENTS.md`](./docs/EXPERIMENTS.md), [`CONVENTIONS.md`](./docs/CONVENTIONS.md), [`SETUP.md`](./docs/SETUP.md)). |
 | [`evals/`](./evals/) | Automated evaluation suites and scoring rubrics. |
 | [`outputs/`](./outputs/) | Temporary run outputs (raw generations, logs). **Not committed to Git.** |
 | [`src/`](./src/) | Reusable source code to execute experiments. |

@@ -1,7 +1,6 @@
 # Task List
 
 ### Simplify Repo
-- [ ] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
 - [ ] Add convetions and best practices on branching, merging
 - [ ] Refactor to improve parameterized unit tests over process run
 - [ ] Setup playground
@@ -17,4 +16,5 @@
 - [ ] Make it easy to explore using `notebooks`
 
 # Task Completed
+- [x] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
 - [x] Introduce pyproject to avoid running python with `PYTHONPATH=./src`

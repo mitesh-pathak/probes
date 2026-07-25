@@ -1,3 +1,7 @@
+# Naming Convention
+We consistently use <prefix><3 digit integer> for naming research, experiments and run id.
+
+
 # Python Files Convention
 We will use `# %%` create cells similar to jupyter notebook in python file.
 To execute a cell use `Shift + Enter`.
