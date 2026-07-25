@@ -1,78 +1,37 @@
 # Probes
-My Tinker Lab, My Experiments, My Probes on AI
+> *My Tinker Lab, My Experiments, My Probes on AI.*
 
----
-# Base Setup
-## Setup virtual environment
-```sh
-python3 -m venv .venv --without-pip 
-source  .venv/bin/activate
+
+## Modus Operandi
+> *"Everything should be made as simple as possible, but not simpler."*
+
+
+## Core Hierarchy
+* **Research:** A pointed, goal-based investigation driven by a primary research question.
+* **Experiment:** A testable hypothesis designed to gather evidence for or against a research question.
+* **Run:** A single execution of an experiment where `one variable` in the configuration is modified and tested.
+
+Each successful or failed run generates an **Artifact** pushed to an experiment database (e.g., Weights & Biases) and recorded back into `./context/` to advance or prune the Directed Acyclic Graph (DAG).
+
+```text
+Artifact = {Run ID, Git Commit Hash, Parent Commit Hash, Metrics, Result Output}
 ```
 
-## Install pip and other packages
-```sh
-curl -sS https://bootstrap.pypa.io/get-pip.py | python
-pip install -r requirements.txt
-```
+Read more about the research hierarchy and DAG in [docs/RESEARCH.md](./docs/RESEARCH.md)
 
----
-# Project Structure
-To Be Added
 
-## Add ./src as path
-To import modules from under /src directory
-```sh
-touch .env
-echo 'PYTHONPATH=./src' >> .env
-```
+## Project Structure
+| Directory | Purpose |
+|---|---|
+| [`configs/`](./configs/) | Configuration files for baselines and experiment runs. |
+| [`context/`](./context/) | Accumulated knowledge graph (research questions and experiment logs). |
+| [`dataset/`](./dataset/) | Datasets and benchmarks accumulated across research runs. |
+| [`docs/`](./docs/) | Process guides and manuals ([`RESEARCH.md`](./docs/RESEARCH.md), [`EXPERIMENTS.md`](./docs/EXPERIMENTS.md), [`CODING.md`](./docs/CODING.md), [`SETUP.md`](./docs/SETUP.md)). |
+| [`evals/`](./evals/) | Automated evaluation suites and scoring rubrics. |
+| [`outputs/`](./outputs/) | Temporary run outputs (raw generations, logs). **Not committed to Git.** |
+| [`src/`](./src/) | Reusable source code to execute experiments. |
+| [`tests/`](./tests/) | Software unit tests for `src/`. |
 
----
-# Run Environment
-## Ensure .venv is activated
-```sh
-source .venv/bin/activate
-```
 
-## Ensure VS Code Can Run Using .venv Python Kernel
-```sh
-python -m ipykernel install --user --name=probes --display-name "Python (.venv: probes)"
-```
-
-## Run Tests
-```sh
-PYTHONPATH=./src pytest
-```
-
----
-# Python Files Convention
-We will use `# %%` create cells similar to jupyter notebook in python file.
-To execute a cell use `Shift + Enter`.
-
-## Code Cell
-```python
-# %%
-# # Load Libraries
-
-import numpy as np
-import pandas as pd
-
-# %%
-# # Load Data
-
-df = pd.read_csv("data/data.csv")
-df.head()
-```
-
-## Text / Markdown / Comments Cell
-```python
-# %%
-# # Feature Engineering
-#
-# We normalize the features because
-# KMeans is distance based.
-#
-# Formula:
-#
-#     z = (x - mean) / std
-#
-```
+## Getting Started
+To set up your local environment and run your first probe, refer to **[`docs/SETUP.md`](./docs/SETUP.md)**.

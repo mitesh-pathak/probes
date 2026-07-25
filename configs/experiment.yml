@@ -1,0 +1,33 @@
+# ==========================================
+# EXPERIMENT METADATA
+# ==========================================
+metadata:
+  research_id: rs001
+  experiment_id: exp001
+  parent_state: s001
+  title: "SmolLM Zero-Shot Extraction"
+  hypothesis: "Zero-shot prompt will achieve >70% field accuracy on eval_001."
+
+# ==========================================
+# HYPERPARAMETERS & CONFIGS
+# ==========================================
+model:
+  name_or_path: "HuggingFaceTB/SmolLM2-135M-Instruct"
+  max_new_tokens: 60
+  do_sample: false
+
+task:
+  dataset_path: "evals/eval001_person_info_extraction.jsonl"
+  prompt_template: |
+    Extract person details from the text into valid JSON with keys: 'name', 'age', 'profession'.
+    Output ONLY valid JSON and nothing else.
+
+    Text: {text}
+    JSON:
+
+eval:
+  module: "utils.evals"
+  required_keys:
+    - "name"
+    - "age"
+    - "profession"

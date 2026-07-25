@@ -1,0 +1,5 @@
+{"input": "Sarah Jenkins is a 34-year-old bio-engineer living in Seattle.", "target": {"name": "Sarah Jenkins", "age": 34, "profession": "bio-engineer"}}
+{"input": "Marcus, 22, works as a barista while studying music.", "target": {"name": "Marcus", "age": 22, "profession": "barista"}}
+{"input": "Dr. Elena Rostova (age 51) was appointed head of cardiology.", "target": {"name": "Elena Rostova", "age": 51, "profession": "head of cardiology"}}
+{"input": "Liam is 19 and works full-time as a welder.", "target": {"name": "Liam", "age": 19, "profession": "welder"}}
+{"input": "A 45-year-old architect named Maya just published a book.", "target": {"name": "Maya", "age": 45, "profession": "architect"}}

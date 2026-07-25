@@ -1,0 +1,31 @@
+id: rs001
+title: SmolLM JSON Extraction Reliability
+goal: json_valid_rate >= 0.90
+current_state: s002
+nodes:
+  s001:
+    label: Zero-Shot Prompt
+    metrics:
+      json_valid_rate: 0.4
+      latency_ms: 180
+    status: ACTIVE
+  s002:
+    status: PRUNED
+    hypothesis: Zero-shot extraction with SmolLM will achieve >70% valid JSON formatting
+      on simple text samples.
+    delta: Zero-shot prompt template without in-context examples
+    metrics:
+      valid_json_rate: 0.8
+      exact_match_accuracy: 0.4
+      field_accuracy: 0.6
+      latency_ms: 1727.17
+    lesson: Zero-shot model produces valid JSON structure initially but repeats output/hallucinates
+      fields, causing string truncation and strict json.loads failure.
+edges:
+- from: s001
+  to: s002
+  delta: Zero-shot prompt template without in-context examples
+  status: FAILED
+  lesson: Zero-shot model produces valid JSON structure initially but repeats output/hallucinates
+    fields, causing string truncation and strict json.loads failure.
+  artifact: context/experiment_runs/rs001_exp001_run001_artifact.json
