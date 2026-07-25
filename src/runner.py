@@ -1,3 +1,4 @@
+import os
 import argparse
 import importlib
 import json
@@ -6,10 +7,17 @@ from pathlib import Path
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import yaml
+import mlflow
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+mlflow_host = os.getenv("MLFLOW_HOST")
+mlflow_port = os.getenv("MLFLOW_PORT")
+
+mlflow.set_tracking_uri(f"http://{mlflow_host}:{mlflow_port}")
+mlflow.autolog()
 
 OUTPUTS_DIR = Path("outputs")
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -35,7 +43,15 @@ def run_experiment(config_path: str):
     task_cfg = config["task"]
     eval_cfg = config["eval"]
 
-    run_id = f"{meta['research_id']}_{meta['experiment_id']}_run001"
+    research_id = meta['research_id']
+    experiment_id = meta['experiment_id']
+
+    run_id = f"{research_id}_{experiment_id}_run001"
+
+    print("MLFlow: Log Params")
+    experiment  = mlflow.set_experiment(experiment_name=experiment_id)
+    mlflow.set_experiment_tag(key="research", value=research_id)
+
     print(f"🚀 Running Experiment: {run_id}")
     print(f"   Model   : {model_cfg['name_or_path']}")
     print(f"   Dataset : {task_cfg['dataset_path']}")
@@ -98,6 +114,14 @@ def run_experiment(config_path: str):
         "metrics": final_metrics,
         "predictions": eval_result["details"],
     }
+
+    print("MLFlow: Logging metrics")
+    with mlflow.start_run(experiment_id=experiment.experiment_id, run_name=run_id) as run:
+        mlflow.log_param(key="model", value=model_cfg["name_or_path"])
+        mlflow.log_param(key="max_token", value=model_cfg["max_new_tokens"])
+        mlflow.log_param(key="do_sample", value=model_cfg["do_sample"])
+
+        mlflow.log_metrics(output_artifact["metrics"])
 
     output_path = OUTPUTS_DIR / f"{run_id}.json"
     with open(output_path, "w") as f:

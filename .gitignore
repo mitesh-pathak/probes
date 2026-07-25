@@ -5,6 +5,7 @@ __pycache__/
 
 # Output from an Experimental run
 outputs/
+artifacts/mlflow/
 
 # C extensions
 *.so

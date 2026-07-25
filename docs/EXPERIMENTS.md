@@ -163,6 +163,13 @@ python -m research graph  --rs rs001 > rs001.dot
 ```
 
 
+## Using MLFLOW
+Ensure to set `MLFLOW_BACKEND_STORE_URI`, `MLFLOW_PORT`, `MLFLOW_HOST` in [.env]()../.env) file.
+```sh
+export $(xargs < .env) && mlflow
+```
+
+
 ## Tools
 | Layer | Tool | Purpose |
 |---|---|---|

@@ -4,6 +4,8 @@
 - [ ] Add convetions and best practices on branching, merging
 - [ ] Refactor to improve parameterized unit tests over process run
 - [ ] Setup playground
+- [ ] Improve CLI tool to navigate and search info about existing research and experiments
+- [ ] Improve experiment tracking
 
 ### AI Research Agent (Automation)
 - [ ] Auto generation of experiment.yaml during experiment creation
