@@ -10,12 +10,12 @@ Each **Research** is modeled as a State DAG (Directed Acyclic Graph):
 
 # Research Architecture
 ```
-[ Research Question ]  <-- see context/research_questions/
+[ Research Question ]  <-- see artifacts/dag_research/
 
 |
 V
 
-[ Testable Hypothesis ] <-- see context/experiment_runs/
+[ Testable Hypothesis ] <-- see artifacts/experiment_runs/
 
 |
 V
@@ -25,7 +25,7 @@ V
 |
 V
 
-[ State Update / Repeat ] <-- update context/ and repeat
+[ State Update / Repeat ] <-- update artifacts/ and repeat
 
 ```
 
@@ -49,7 +49,7 @@ V
     where, `Git Commit Hash` captures {Dataset, Prompt, Config}
     ```
 8. **Analyze Result:** Evaluate quantitative scores alongside qualitative error.
-9. **Update DAG Context:**
+9. **Record Artifacts & Update DAG:**
     * **On Success:** Add a new state node and advance the branch.
     * **On Failure / Dead End:** Mark edge as invalidated, log negative results, and backtrack to parent node.
 
@@ -58,7 +58,7 @@ V
 
 # Create New Research
 ```sh
-PYTHONPATH=./src python -m research init \
+python -m research init \
   --title "SmolLM JSON Extraction Reliability" \
   --goal "json_valid_rate >= 0.90" \
   --baseline-label "Zero-Shot Prompt" \
@@ -67,6 +67,6 @@ PYTHONPATH=./src python -m research init \
 
 # View Research
 ```sh
-PYTHONPATH=./src python -m research status --rs rs001
-PYTHONPATH=./src python -m research graph  --rs rs001
+python -m research status --rs rs001
+python -m research graph  --rs rs001
 ```

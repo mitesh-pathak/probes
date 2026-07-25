@@ -16,7 +16,7 @@ python -m research new-exp \
 ```
 
 ### Step-by-Step Creation
-1. **Identify Parent State:** Check `current_state` in `context/research_questions/rs001.yml` (e.g., `s002`).
+1. **Identify Parent State:** Check `current_state` in `artifacts/dag_research/rs001.yml` (e.g., `s002`).
 2. **Define Experiment Metadata & Delta:** Create or edit `configs/experiment.yml`. Fill in the `metadata` header block (`research_id`, `experiment_id`, `parent_state`, `hypothesis`, `variable_delta`).
 
 
@@ -25,7 +25,7 @@ Execution must be deterministic. The runner reads metadata and parameters strict
 
 ### Execution Rules
 1. **Never Hardcode Parameters or Metadata:** All hyperparameters, hypotheses, and research IDs must live inside `configs/experiment.yml`.
-2. **Auto-logging Metadata:** `src/runner.py` must automatically parse the `metadata` block from the config and attach it to the generated run artifact JSON in `./context/experiment_runs/`.
+2. **Auto-logging Metadata:** `src/runner.py` must automatically parse the `metadata` block from the config and attach it to the generated run artifact JSON in `./artifacts/experiment_runs/`.
 3. **Outputs are Disposable:** Raw generations and temporary logs land in `./outputs/` and are **never committed to Git**.
 
 ### Setting Up Config From Parent State
@@ -36,7 +36,7 @@ git checkout <PARENT_COMMIT_HASH> -- configs/
 ### Running via CLI
 Run your execution script by explicitly passing the target config path:
 ```sh
-PYTHONPATH=./src python -m runner --config configs/experiment.yml
+python -m runner --config configs/experiment.yml
 ```
 
 
@@ -62,7 +62,7 @@ python evals/evaluate.py --output outputs/rs001_exp001_run001.json
 
 
 ## 4. Recording Experiments & Generating Artifacts (Manual)
-Every run must generate an immutable **Run Artifact** and update the local context file.
+Every run must generate an immutable **Run Artifact** and update the local `artifacts/` directory.
 
 ### Artifact Schema
 Ensure your run logger outputs structured metadata to stdout and your tracking tool (e.g., Weights & Biases):
@@ -81,11 +81,11 @@ Ensure your run logger outputs structured metadata to stdout and your tracking t
 ```
 
 ### Storing Artifacts
-Save the artifact JSON in `./context/experiment_runs/` following this exact naming convention: `rs001_exp001_run001_artifact.json`
+Save the artifact JSON in `./artifacts/experiment_runs/` following this exact naming convention: `rs001_exp001_run001_artifact.json`
 
 
 ## 5. Updating the State DAG
-Once runs are complete, record the state transition directly in `context/research_questions/rs<id>.yml` (e.g., `rs001.yml`):
+Once runs are complete, record the state transition directly in `artifacts/dag_research/rs<id>.yml` (e.g., `rs001.yml`):
 
 * **If Successful:**
   - Add the new state node to `nodes` (e.g., `s002`) and set `current_state` to it.
@@ -99,7 +99,7 @@ Once runs are complete, record the state transition directly in `context/researc
 
 ### Using Command line
 ```sh
-PYTHONPATH=./src python3 src/research.py record \
+python src/research.py record \
   --rs rs001 \
   --state s002 \
   --status failed \
@@ -108,7 +108,7 @@ PYTHONPATH=./src python3 src/research.py record \
 ```
 
 ### Sample Research State File
-Example: `context/research_questions/rs001.yml`
+Example: `artifacts/dag_research/rs001.yml`
 
 ```yaml
 id: rs001
@@ -137,7 +137,7 @@ edges:
     target: s002
     status: SUCCESS
     run_id: rs001_exp001_run001
-    artifact: context/experiment_runs/rs001_exp001_run001_artifact.json
+    artifact: artifacts/experiment_runs/rs001_exp001_run001_artifact.json
     hypothesis: "Quantizing KV cache to INT8 reduces latency by >20% with <1% F1 loss."
     lesson: "Group size 64 preserves attention precision while reducing bandwidth pressure."
 
@@ -145,32 +145,28 @@ edges:
     target: s003
     status: FAILED
     run_id: rs001_exp001_run002
-    artifact: context/experiment_runs/rs001_exp001_run002_artifact.json
+    artifact: artifacts/experiment_runs/rs001_exp001_run002_artifact.json
     hypothesis: "Quantizing KV cache to INT4 further reduces latency without accuracy drop."
     lesson: "Severe accuracy drop (F1 71.2% < 80%). Precision loss causes hallucinations in long context."
 ```
 **NOTE**: Valid status are [PLANNED / ACTIVE / PRUNED] for nodes and [SUCCESS / FAILED] for edges
 
 
-## Loading Graph
-
-### Command line
+### Generate DAG Graph In DOT Format
 ```sh
-PYTHONPATH=./src python -m research graph  --rs rs001
+python -m research graph  --rs rs001
 ```
 
-### Python Program
-```python
-import yaml, networkx as nx
+To store the graph in a file:
+```sh
+python -m research graph  --rs rs001 > rs001.dot
+```
 
-# Load graph in 2 lines
-with open("context/research_questions/rs001.yml") as f:
-    data = yaml.safe_load(f)
 
-# Convert to NetworkX DAG automatically
-G = nx.DiGraph()
-for edge in data["edges"]:
-    G.add_edge(edge["source"], edge["target"], status=edge["status"], lesson=edge["lesson"])
+## Using MLFLOW
+Ensure to set `MLFLOW_BACKEND_STORE_URI`, `MLFLOW_PORT`, `MLFLOW_HOST` in [.env]()../.env) file.
+```sh
+export $(xargs < .env) && mlflow
 ```
 
 

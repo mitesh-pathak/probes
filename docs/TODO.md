@@ -1,0 +1,23 @@
+# Task List
+
+### Simplify Repo
+- [ ] Add convetions and best practices on branching, merging
+- [ ] Refactor to improve parameterized unit tests over process run
+- [ ] Setup playground
+- [ ] Improve CLI tool to navigate and search info about existing research and experiments
+- [ ] Improve experiment tracking
+
+### AI Research Agent (Automation)
+- [ ] Auto generation of experiment.yaml during experiment creation
+- [ ] Refactor big functions into tool calls
+- [ ] Track parent in state so it's easy to nativate on fallback
+- [ ] Auto update of artifacts including commit and state update on record
+- [ ] Add AGENTS.md for agents to use these and run experiments
+
+### Exploration
+- [ ] Make it easy to explore using `notebooks`
+
+# Task Completed
+- [x] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
+- [x] Introduce pyproject to avoid running python with `PYTHONPATH=./src`
+- [x] Generate DOT graph for research DAG, makes it easy to visualize

@@ -4,8 +4,8 @@ import re
 from pathlib import Path
 import yaml
 
-RESEARCH_DIR = Path("context/research_questions")
-RUNS_DIR = Path("context/experiment_runs")
+RESEARCH_DIR = Path("artifacts/dag_research")
+RUNS_DIR = Path("artifacts/experiment_runs")
 
 
 def parse_kv_pairs(pairs_list: list) -> dict:
@@ -248,8 +248,13 @@ def cmd_graph(args):
     for edge in edges:
         src = edge.get("from")
         dst = edge.get("to")
+        delta = edge.get("delta")
         run_id = Path(edge["artifact"]).name.replace("_artifact.json", "") if edge.get("artifact") else edge.get("delta", "")
-        lines.append(f'  {src} -> {dst} [label="{run_id}",fontsize=6];')
+        label = f'{run_id} ({delta})'
+        lines.append(f'  {run_id} [shape=plaintext, fontname="Helvetica", label="{label}"];')
+        lines.append(f'  {src} -> {run_id}')
+        lines.append(f'  {run_id} -> {dst}')
+
 
     lines.append("}")
 
