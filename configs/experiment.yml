@@ -1,28 +1,33 @@
 # ==========================================
-# EXAMPLE EXPERIMENT METADATA
+# EXPERIMENT METADATA
 # ==========================================
 metadata:
   research_id: rs001
   experiment_id: exp001
-  parent_state: s002
-  title: "Test INT4 KV Cache with Per-Channel Quantization"
-  hypothesis: "Switching from per-tensor to per-channel INT4 quantization recovers lost long-context F1 accuracy while retaining low latency."
-  variable_delta:
-    kv_cache_dtype: int4
-    quant_granularity: per_channel
+  parent_state: s001
+  title: "SmolLM Zero-Shot Extraction"
+  hypothesis: "Zero-shot prompt will achieve >70% field accuracy on eval_001."
 
 # ==========================================
-# EXAMPLE HYPERPARAMETERS & CONFIGS
+# HYPERPARAMETERS & CONFIGS
 # ==========================================
 model:
-  name: "meta-llama/Meta-Llama-3-8B"
-  kv_cache_dtype: "int4"
-  quant_granularity: "per_channel"
+  name_or_path: "HuggingFaceTB/SmolLM2-135M-Instruct"
+  max_new_tokens: 60
+  do_sample: false
 
-dataset:
-  path: "data/eval_long_context.jsonl"
-  max_seq_len: 16384
+task:
+  dataset_path: "evals/eval001_person_info_extraction.jsonl"
+  prompt_template: |
+    Extract person details from the text into valid JSON with keys: 'name', 'age', 'profession'.
+    Output ONLY valid JSON and nothing else.
 
-generation:
-  temperature: 0.0
-  max_new_tokens: 512
+    Text: {text}
+    JSON:
+
+eval:
+  module: "utils.evals"
+  required_keys:
+    - "name"
+    - "age"
+    - "profession"

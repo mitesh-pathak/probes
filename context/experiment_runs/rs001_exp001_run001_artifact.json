@@ -1,0 +1,13 @@
+{
+  "run_id": "rs001_exp001_run001",
+  "research_id": "rs001",
+  "target_state": "s002",
+  "status": "Failed",
+  "metrics": {
+    "valid_json_rate": 0.8,
+    "exact_match_accuracy": 0.4,
+    "field_accuracy": 0.6,
+    "latency_ms": 1727.17
+  },
+  "lesson": "Zero-shot model produces valid JSON structure initially but repeats output/hallucinates fields, causing string truncation and strict json.loads failure."
+}

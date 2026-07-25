@@ -36,7 +36,7 @@ git checkout <PARENT_COMMIT_HASH> -- configs/
 ### Running via CLI
 Run your execution script by explicitly passing the target config path:
 ```sh
-python src/runner.py --config configs/experiment.yml
+PYTHONPATH=./src python -m runner --config configs/experiment.yml
 ```
 
 
@@ -99,12 +99,12 @@ Once runs are complete, record the state transition directly in `context/researc
 
 ### Using Command line
 ```sh
-PYTHONPATH=./src python -m research record \
+PYTHONPATH=./src python3 src/research.py record \
   --rs rs001 \
   --state s002 \
-  --status success \
-  --lesson "Zero-shot extraction achieved valid JSON, but required strict 'ONLY valid JSON' instruction in prompt." \
-  --metrics valid_rate=0.80 latency_ms=145.2
+  --status failed \
+  --lesson "Zero-shot model produces valid JSON structure initially but repeats output/hallucinates fields, causing string truncation and strict json.loads failure." \
+  --metrics valid_json_rate=0.8 exact_match_accuracy=0.4 field_accuracy=0.6 latency_ms=1727.17
 ```
 
 ### Sample Research State File

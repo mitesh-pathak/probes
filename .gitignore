@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Output from an Experimental run
-output/*
+outputs/
 
 # C extensions
 *.so
