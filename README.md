@@ -11,7 +11,7 @@
 * **Experiment:** A testable hypothesis designed to gather evidence for or against a research question.
 * **Run:** A single execution of an experiment where `one variable` in the configuration is modified and tested.
 
-Each successful or failed run generates an **Artifact** pushed to an experiment database (e.g., Weights & Biases) and recorded back into `./context/` to advance or prune the Directed Acyclic Graph (DAG).
+Each successful or failed run generates an **Artifact** pushed to an experiment database (e.g., Weights & Biases) and recorded back into `./artifacts/` to advance or prune the Directed Acyclic Graph (DAG).
 
 ```text
 Artifact = {Run ID, Git Commit Hash, Parent Commit Hash, Metrics, Result Output}
@@ -24,7 +24,7 @@ Read more about the research hierarchy and DAG in [docs/RESEARCH.md](./docs/RESE
 | Directory | Purpose |
 |---|---|
 | [`configs/`](./configs/) | Configuration files for baselines and experiment runs. |
-| [`context/`](./context/) | Accumulated knowledge graph (research questions and experiment logs). |
+| [`artifacts/`](./artifacts/) | Accumulated knowledge graph (research dags and experiment artifacts). |
 | [`dataset/`](./dataset/) | Datasets and benchmarks accumulated across research runs. |
 | [`docs/`](./docs/) | Process guides and manuals ([`RESEARCH.md`](./docs/RESEARCH.md), [`EXPERIMENTS.md`](./docs/EXPERIMENTS.md), [`CODING.md`](./docs/CODING.md), [`SETUP.md`](./docs/SETUP.md)). |
 | [`evals/`](./evals/) | Automated evaluation suites and scoring rubrics. |

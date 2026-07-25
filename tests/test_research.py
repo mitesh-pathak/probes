@@ -13,7 +13,7 @@ SRC_DIR = PROJECT_ROOT / "src"
 @pytest.fixture
 def test_env(tmp_path, monkeypatch):
     """Sets up a temporary working directory for tests."""
-    research_dir = tmp_path / "context" / "research_questions"
+    research_dir = tmp_path / "artifacts" / "dag_research"
     research_dir.mkdir(parents=True)
 
     # Change working directory to tmp_path during test
@@ -55,7 +55,7 @@ def test_init_creates_rs001_when_no_prior_questions_exist(test_env):
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
 
     # Assert file creation
-    target_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    target_file = tmp_path / "artifacts" / "dag_research" / "rs001.yml"
     assert target_file.exists()
 
     # Assert YAML structure
@@ -76,7 +76,7 @@ def test_init_auto_increments_rs_id(test_env):
     tmp_path, env = test_env
 
     # Arrange: existing rs001.yml
-    existing_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    existing_file = tmp_path / "artifacts" / "dag_research" / "rs001.yml"
     existing_file.write_text("id: rs001\n")
 
     # Act
@@ -98,7 +98,7 @@ def test_init_auto_increments_rs_id(test_env):
 
     # Assert
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
-    target_file = tmp_path / "context" / "research_questions" / "rs002.yml"
+    target_file = tmp_path / "artifacts" / "dag_research" / "rs002.yml"
     assert target_file.exists()
 
 
@@ -144,7 +144,7 @@ def test_new_exp_stages_candidate_node_and_edge(test_env):
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
 
     # 4. Assert updated YAML content
-    target_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    target_file = tmp_path / "artifacts" / "dag_research" / "rs001.yml"
     with open(target_file) as f:
         data = yaml.safe_load(f)
 
@@ -217,7 +217,7 @@ def test_record_successful_experiment_updates_dag_and_creates_artifact(test_env)
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
 
     # 3. Assert YAML update
-    rs_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    rs_file = tmp_path / "artifacts" / "dag_research" / "rs001.yml"
     with open(rs_file) as f:
         data = yaml.safe_load(f)
 
@@ -231,7 +231,7 @@ def test_record_successful_experiment_updates_dag_and_creates_artifact(test_env)
     assert edge["lesson"] == "Group size 64 preserves attention precision"
 
     # 4. Assert artifact creation
-    artifact_path = tmp_path / "context" / "experiment_runs" / "rs001_exp001_run001_artifact.json"
+    artifact_path = tmp_path / "artifacts" / "experiment_runs" / "rs001_exp001_run001_artifact.json"
     assert artifact_path.exists()
 
 
@@ -288,7 +288,7 @@ def test_record_failed_experiment_prunes_node_and_keeps_current_state(test_env):
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
 
     # 3. Assert current_state remains anchored at s001
-    rs_file = tmp_path / "context" / "research_questions" / "rs001.yml"
+    rs_file = tmp_path / "artifacts" / "dag_research" / "rs001.yml"
     with open(rs_file) as f:
         data = yaml.safe_load(f)
 

@@ -4,8 +4,8 @@ import re
 from pathlib import Path
 import yaml
 
-RESEARCH_DIR = Path("context/research_questions")
-RUNS_DIR = Path("context/experiment_runs")
+RESEARCH_DIR = Path("artifacts/dag_research")
+RUNS_DIR = Path("artifacts/experiment_runs")
 
 
 def parse_kv_pairs(pairs_list: list) -> dict:

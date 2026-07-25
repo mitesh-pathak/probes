@@ -28,4 +28,4 @@ edges:
   status: FAILED
   lesson: Zero-shot model produces valid JSON structure initially but repeats output/hallucinates
     fields, causing string truncation and strict json.loads failure.
-  artifact: context/experiment_runs/rs001_exp001_run001_artifact.json
+  artifact: artifacts/experiment_runs/rs001_exp001_run001_artifact.json
