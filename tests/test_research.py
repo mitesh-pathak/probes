@@ -423,3 +423,69 @@ def test_status_displays_summary_including_current_state_and_pruned_branches(tes
     assert "INT8 works well" in stdout
     assert "PRUNED" in stdout
     assert "INT4 lost too much accuracy" in stdout
+
+def test_graph_outputs_simplified_nodes_and_edges(test_env):
+    tmp_path, env = test_env
+
+    # 1. Arrange: Init rs001 and stage s002
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "init",
+            "--title",
+            "Graph Structure Test",
+            "--goal",
+            "Simplify output",
+            "--baseline-label",
+            "Baseline Model",
+        ],
+        check=True,
+        env=env,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "new-exp",
+            "--rs",
+            "rs001",
+            "--hypothesis",
+            "INT8 Quantization",
+            "--delta",
+            "Apply INT8",
+        ],
+        check=True,
+        env=env,
+    )
+
+    # 2. Act: Execute research graph
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "research",
+            "graph",
+            "--rs",
+            "rs001",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+
+    # 3. Assert CLI success and stdout structure
+    assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
+
+    stdout = result.stdout
+    # Node assertions (id + label)
+    assert "s001" in stdout
+    assert "Baseline Model" in stdout
+    assert "s002" in stdout
+    assert "INT8 Quantization" in stdout
+
+    # Edge assertions (from -> to + delta)
+    assert "s001 -> s002" in stdout or "s001 --> s002" in stdout
+    assert "Apply INT8" in stdout

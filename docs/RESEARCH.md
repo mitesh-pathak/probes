@@ -64,3 +64,9 @@ PYTHONPATH=./src python -m research init \
   --baseline-label "Zero-Shot Prompt" \
   --metrics json_valid_rate=0.40 latency_ms=180
 ```
+
+# View Research
+```sh
+PYTHONPATH=./src python -m research status --rs rs001
+PYTHONPATH=./src python -m research graph  --rs rs001
+```

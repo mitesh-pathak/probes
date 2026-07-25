@@ -216,6 +216,46 @@ def cmd_status(args):
             print(f"    Lesson: {lesson}")
 
 
+def cmd_graph(args):
+    """Outputs the research DAG in Graphviz DOT format."""
+    target_file = RESEARCH_DIR / f"{args.rs}.yml"
+    if not target_file.exists():
+        raise FileNotFoundError(f"Research question file '{target_file}' not found.")
+
+    with open(target_file, "r") as f:
+        rs_data = yaml.safe_load(f)
+
+    nodes = rs_data.get("nodes", {})
+    edges = rs_data.get("edges", [])
+
+    lines = [
+        f"digraph {args.rs} {{",
+        "  rankdir=LR;",
+        '  node [shape=box, fontname="Helvetica"];',
+        '  edge [fontname="Helvetica"];',
+        "",
+    ]
+
+    # Render Nodes
+    for nid, ninfo in nodes.items():
+        label = ninfo.get("label") or ninfo.get("hypothesis") or "Unnamed State"
+        safe_label = f"{nid}\\n{label}".replace('"', '\\"')
+        lines.append(f'  {nid} [label="{safe_label}"];')
+
+    lines.append("")
+
+    # Render Edges
+    for edge in edges:
+        src = edge.get("from")
+        dst = edge.get("to")
+        run_id = Path(edge["artifact"]).name.replace("_artifact.json", "") if edge.get("artifact") else edge.get("delta", "")
+        lines.append(f'  {src} -> {dst} [label="{run_id}",fontsize=6];')
+
+    lines.append("}")
+
+    print("\n".join(lines))
+
+
 def main():
     parser = argparse.ArgumentParser(description="Research Execution CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -277,6 +317,13 @@ def main():
         "--rs", required=True, help="Research question ID (e.g. rs001)"
     )
     p_status.set_defaults(func=cmd_status)
+
+    # Command: graph
+    p_graph = subparsers.add_parser("graph", help="Print simplified DAG structure")
+    p_graph.add_argument(
+        "--rs", required=True, help="Research question ID (e.g. rs001)"
+    )
+    p_graph.set_defaults(func=cmd_graph)
 
     args = parser.parse_args()
     args.func(args)

@@ -61,16 +61,8 @@ python evals/evaluate.py --output outputs/rs001_exp001_run001.json
 * **Custom Score:** Distance metric from your defined Goal State.
 
 
-## 4. Recording Experiments & Generating Artifacts
+## 4. Recording Experiments & Generating Artifacts (Manual)
 Every run must generate an immutable **Run Artifact** and update the local context file.
-```sh
-PYTHONPATH=./src python -m research record \
-  --rs rs001 \
-  --state s002 \
-  --status success \
-  --lesson "Zero-shot extraction achieved valid JSON, but required strict 'ONLY valid JSON' instruction in prompt." \
-  --metrics valid_rate=0.80 latency_ms=145.2
-```
 
 ### Artifact Schema
 Ensure your run logger outputs structured metadata to stdout and your tracking tool (e.g., Weights & Biases):
@@ -105,6 +97,15 @@ Once runs are complete, record the state transition directly in `context/researc
   - Add an edge with `status: FAILED` and log the `lesson` (why it failed).
   - Keep `current_state` anchored at the active parent node and select the next hypothesis.
 
+### Using Command line
+```sh
+PYTHONPATH=./src python -m research record \
+  --rs rs001 \
+  --state s002 \
+  --status success \
+  --lesson "Zero-shot extraction achieved valid JSON, but required strict 'ONLY valid JSON' instruction in prompt." \
+  --metrics valid_rate=0.80 latency_ms=145.2
+```
 
 ### Sample Research State File
 Example: `context/research_questions/rs001.yml`
@@ -152,6 +153,13 @@ edges:
 
 
 ## Loading Graph
+
+### Command line
+```sh
+PYTHONPATH=./src python -m research graph  --rs rs001
+```
+
+### Python Program
 ```python
 import yaml, networkx as nx
 
