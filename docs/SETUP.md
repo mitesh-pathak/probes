@@ -1,7 +1,7 @@
 # Base Setup
 ## Setup virtual environment
 ```sh
-python3 -m venv .venv --without-pip 
+python -m venv .venv --without-pip
 source  .venv/bin/activate
 ```
 
@@ -18,30 +18,60 @@ touch .env
 echo 'PYTHONPATH=./src' >> .env
 ```
 
+## Setup src/ module To avoid `ModuleNotFoundError`
+```sh
+pip install -e .
+```
+
 ## Ensure VS Code Can Run Using .venv Python Kernel
 ```sh
 python -m ipykernel install --user --name=probes --display-name "Python (.venv: probes)"
 ```
 
-## Note On Run Any Files
-Include PYTHONPATH=./src to ensure the models are loaded and avoid `ModuleNotFoundError`.
+## Run All Tests Using PyTest
 ```sh
-export PYTHONPATH=./src
+pytest
 ```
 
 
 ---
-# Run Tests
-## Ensure .venv is activated
+# Key Commands
+### Ensure .venv is activated
 ```sh
 source .venv/bin/activate
 ```
 
-## Run All Tests Using PyTest
+### Create New Research
 ```sh
-PYTHONPATH=./src pytest
+python -m research init \
+  --title "SmolLM JSON Extraction Reliability" \
+  --goal "json_valid_rate >= 0.90" \
+  --baseline-label "Zero-Shot Prompt" \
+  --metrics json_valid_rate=0.40 latency_ms=180
 ```
+
+### View Research
+```sh
+python -m research graph  --rs rs001
+```
+
+### Running Experiment
+Run your execution script by explicitly passing the target config path:
+```sh
+python -m runner --config configs/experiment.yml
+```
+
+### Record Experiment Results
+```sh
+python src/research.py record \
+  --rs rs001 \
+  --state s002 \
+  --status failed \
+  --lesson "Zero-shot model produces valid JSON structure initially but repeats output/hallucinates fields, causing string truncation and strict json.loads failure." \
+  --metrics valid_json_rate=0.8 exact_match_accuracy=0.4 field_accuracy=0.6 latency_ms=1727.17
+```
+
 
 ---
 # Next Step
-Learn how to [create research](./RESEARCH.md) and [run experiements](./EXPERIMENTS.md).
+Learn how to [setup research](./RESEARCH.md) and [run experiements](./EXPERIMENTS.md).

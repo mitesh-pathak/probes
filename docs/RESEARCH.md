@@ -58,7 +58,7 @@ V
 
 # Create New Research
 ```sh
-PYTHONPATH=./src python -m research init \
+python -m research init \
   --title "SmolLM JSON Extraction Reliability" \
   --goal "json_valid_rate >= 0.90" \
   --baseline-label "Zero-Shot Prompt" \
@@ -67,6 +67,6 @@ PYTHONPATH=./src python -m research init \
 
 # View Research
 ```sh
-PYTHONPATH=./src python -m research status --rs rs001
-PYTHONPATH=./src python -m research graph  --rs rs001
+python -m research status --rs rs001
+python -m research graph  --rs rs001
 ```

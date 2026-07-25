@@ -7,6 +7,10 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import yaml
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 OUTPUTS_DIR = Path("outputs")
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 

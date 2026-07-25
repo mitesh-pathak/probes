@@ -36,7 +36,7 @@ git checkout <PARENT_COMMIT_HASH> -- configs/
 ### Running via CLI
 Run your execution script by explicitly passing the target config path:
 ```sh
-PYTHONPATH=./src python -m runner --config configs/experiment.yml
+python -m runner --config configs/experiment.yml
 ```
 
 
@@ -99,7 +99,7 @@ Once runs are complete, record the state transition directly in `context/researc
 
 ### Using Command line
 ```sh
-PYTHONPATH=./src python3 src/research.py record \
+python src/research.py record \
   --rs rs001 \
   --state s002 \
   --status failed \
@@ -156,7 +156,7 @@ edges:
 
 ### Command line
 ```sh
-PYTHONPATH=./src python -m research graph  --rs rs001
+python -m research graph  --rs rs001
 ```
 
 ### Python Program

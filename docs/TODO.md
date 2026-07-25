@@ -4,7 +4,6 @@
 - [ ] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
 - [ ] Add convetions and best practices on branching, merging
 - [ ] Refactor to improve parameterized unit tests over process run
-- [ ] Introduce pyproject to avoid running python with `PYTHONPATH=./src`
 
 ### AI Research Agent (Automation)
 - [ ] Auto generation of experiment.yaml during experiment creation
@@ -17,3 +16,4 @@
 - [ ] Make it easy to explore using `notebooks`
 
 # Task Completed
+- [x] Introduce pyproject to avoid running python with `PYTHONPATH=./src`
