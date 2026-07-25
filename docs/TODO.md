@@ -4,6 +4,7 @@
 - [ ] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
 - [ ] Add convetions and best practices on branching, merging
 - [ ] Refactor to improve parameterized unit tests over process run
+- [ ] Setup playground
 
 ### AI Research Agent (Automation)
 - [ ] Auto generation of experiment.yaml during experiment creation
