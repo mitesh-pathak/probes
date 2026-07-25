@@ -480,12 +480,13 @@ def test_graph_outputs_simplified_nodes_and_edges(test_env):
     assert result.returncode == 0, f"CLI Failed with stderr:\n{result.stderr}"
 
     stdout = result.stdout
+    print(stdout)
     # Node assertions (id + label)
     assert "s001" in stdout
     assert "Baseline Model" in stdout
     assert "s002" in stdout
     assert "INT8 Quantization" in stdout
 
-    # Edge assertions (from -> to + delta)
-    assert "s001 -> s002" in stdout or "s001 --> s002" in stdout
+    # Edge assertions (from -> to + delta) | (from -> edge, edge -> from) if we plot edge/experiment as graph
+    assert ("s001 -> Apply INT8" in stdout and "Apply INT8 -> s002" in stdout)
     assert "Apply INT8" in stdout

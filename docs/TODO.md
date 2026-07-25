@@ -18,3 +18,4 @@
 # Task Completed
 - [x] Rename CODING.d -> CONVENTIONS.md, context -> artifacts
 - [x] Introduce pyproject to avoid running python with `PYTHONPATH=./src`
+- [x] Generate DOT graph for research DAG, makes it easy to visualize

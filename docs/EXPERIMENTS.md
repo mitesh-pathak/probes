@@ -152,25 +152,14 @@ edges:
 **NOTE**: Valid status are [PLANNED / ACTIVE / PRUNED] for nodes and [SUCCESS / FAILED] for edges
 
 
-## Loading Graph
-
-### Command line
+### Generate DAG Graph In DOT Format
 ```sh
 python -m research graph  --rs rs001
 ```
 
-### Python Program
-```python
-import yaml, networkx as nx
-
-# Load graph in 2 lines
-with open("artifacts/dag_research/rs001.yml") as f:
-    data = yaml.safe_load(f)
-
-# Convert to NetworkX DAG automatically
-G = nx.DiGraph()
-for edge in data["edges"]:
-    G.add_edge(edge["source"], edge["target"], status=edge["status"], lesson=edge["lesson"])
+To store the graph in a file:
+```sh
+python -m research graph  --rs rs001 > rs001.dot
 ```
 
 

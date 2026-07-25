@@ -51,6 +51,7 @@ python -m research init \
 ```
 
 ### View Research
+Prints the GraphViz DOT format of the research graph.
 ```sh
 python -m research graph  --rs rs001
 ```
